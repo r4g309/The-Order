@@ -1,0 +1,29 @@
+{% load compress %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content=
+            "width=device-width, initial-scale=1.0">
+    <title>{{ site_name }}</title>
+
+    {% compress css %}
+        <link rel="stylesheet"
+              href="{% static 'public/output.css' %}">
+    {% endcompress %}
+
+</head>
+
+<body class="bg-blue-50">
+
+<main class="container mx-auto mt-4">
+    {% block content %}
+    {% endblock content %}
+</main>
+</body>
+
+</html>

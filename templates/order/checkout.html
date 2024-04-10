@@ -1,0 +1,41 @@
+{% load humanize %}
+
+{{ cart.name }}<br>
+
+<ul>
+    {% for item in items %}
+        {{ item.name }} - {{ item.quantity }} - {{ item.price|intcomma }} - {{ item.item_total|intcomma }}<br>
+    {% endfor %}
+
+
+</ul>
+
+<p>{{ cart.get_state_display }}</p>
+
+{{ cart.total|intcomma }}<br>
+
+{% if cart.in_site %}
+    <p>Para el sitio</p>
+{% else %}
+    <p>A domicilio</p>
+
+{% endif %}
+
+{{ cart.created_at|date:"d/m/Y H:i:s" }}<br>
+
+<button>
+    <a href="{% url 'create_order' %}">Nueva orden</a>
+</button>
+
+{% if not redirect %}
+    <a href="{% url 'list_orders' %}">
+        <button>Lista de ordenes</button>
+    </a>
+{% endif %}
+{% if redirect %}
+    <script>
+        setTimeout(() => {
+            window.location.href = "{% url 'create_order' %}"
+        }, 5000)
+    </script>
+{% endif %}

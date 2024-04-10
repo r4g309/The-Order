@@ -1,0 +1,31 @@
+{% load humanize %}
+{% for order in orders %}
+    <br>
+    <small>{{ order.created_at|date:"d/m/Y" }}</small>
+    <p>{{ order.in_site|yesno:"Para el sitio,Para llevar" }}</p>
+    <p>{{ order.get_state_display }}</p>
+    <p>{{ order.created_at|date:"H:i:s" }}</p>
+    <h2>{{ order.name }}</h2>
+
+    <div class="container">
+        {% for item in order.items.all %}
+            <p>{{ item.product.name }}</p>
+            <p>{{ item.quantity }}</p>
+            <p>{{ item.observation|default:"-" }}</p>
+        {% endfor %}
+    </div>
+    <h3>{{ order.total|intcomma }}</h3>
+    {% if order.state != states.COMPLETED %}
+        <a href="{% url 'change_state' order.id %}">
+            <button>
+                {% if order.state == states.ON_HOLD %}
+                    Confirmar
+                {% elif order.state == states.IN_PROGRESS %}
+                    Entregar
+                {% endif %}
+            </button>
+        </a>
+    {% endif %}
+{% empty %}
+    <h1>No hay pedidos</h1>
+{% endfor %}

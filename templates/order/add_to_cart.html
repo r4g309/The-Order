@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+
+
+    <h1 class="mb-6 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">{{ in_site|yesno:"Para comer en el sitio,Para llevar" }}<span
+            class="underline underline-offset-3 decoration-8 decoration-blue-400"> {{ name }}</span>
+    </h1>
+
+
+    <form method="post" class="max-w-sm mx-auto flex flex-col gap-0.5">
+        {% csrf_token %}
+        <label for="product" class="block mb-2 text-sm font-medium text-gray-900">Producto:</label>
+        {{ form.product }}
+        <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900">Cantidad:</label>
+        {{ form.quantity }}
+        <label for="observation"
+               class="block mb-2 text-sm font-medium text-gray-900 ">Observación:</label>
+        {{ form.observation }}
+        <button type="submit"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 text-center py-2 mt-2">
+            Agregar
+        </button>
+    </form>
+
+
+
+
+
+
+    {% if added_products %}
+        <div class="relative">
+            <table class="w-full text-sm text-left text-gray-500 m-2">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-100 px-1">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Nombre
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Cantidad
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Precio/Unidad
+                    </th>
+
+                    <th scope="col" class="px-6 py-3">
+                        Observación
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Precio Total
+                    </th>
+                    <th>Eliminar</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for added_product in added_products %}
+                    <tr class="bg-white border-b ">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            {{ added_product.product }}
+                        </th>
+                        <td class="px-6 py-4">
+                            {{ added_product.quantity }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ added_product.product.price|intcomma }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if added_product.observation %}
+                                {{ added_product.observation }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ added_product.item_total|intcomma }}
+                        </td>
+                        <td>
+                            <button type="button"
+                                    class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 rounded-lg text-sm px-1 py-1">
+                                <a href="{% url 'remove_item' cart_id  added_product.id %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round"
+                                         class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M4 7l16 0"></path>
+                                        <path d="M10 11l0 6"></path>
+                                        <path d="M14 11l0 6"></path>
+                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
+                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
+                                    </svg>
+                                </a>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Total: {{ total|intcomma }}</h2>
+        <a href="{% url 'checkout' cart_id %}">
+            <button
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 text-center py-2 mt-2">
+                Ordenar
+            </button>
+        </a>
+    {% else %}
+        <h2 class="font-bold text-2xl mt-5">No haz añadido ningun producto</h2>
+    {% endif %}
+
+
+    <button></button>
+
+
+    <span class="hidden bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></span>
+
+{% endblock %}
